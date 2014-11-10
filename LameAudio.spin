@@ -70,6 +70,18 @@ PUB SetADSR(channel, attackvar, decayvar, sustainvar, releasevar)
     osc_sustain.byte[channel] := sustainvar
     osc_release.byte[channel] := releasevar
     
+PUB LoadPatch(patchAddr) | i, j, t, c
+
+    c := byte[patchAddr] & $F
+        
+    repeat j from 0 to 3
+        if c & $1
+            SetEnvelope(j,1)
+            t := patchAddr + 1
+            repeat i from _ATK to _WAV
+                SetParam(j, i, byte[t++])
+        c >>= 1
+    
 PUB SetAttack(channel, value)
     
     osc_attack.byte[channel] := value
@@ -99,13 +111,13 @@ PUB SetSample(value)
 
 PUB PlaySound(channel, value)
     
+    SetEnvelope(channel, 1)
     StartEnvelope(channel, 1)
     SetNote(channel, value)
 
 PUB StopSound(channel)
     
     StartEnvelope(channel, 0)
-    SetVolume(channel, 0)
     
 PUB StopAllSound | i
 
