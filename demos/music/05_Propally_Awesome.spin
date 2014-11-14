@@ -1,5 +1,5 @@
 {{
-Drop The Beat
+Propally Awesome
 ------------------------------------------------------------
 Version: 1.0
 Copyright (c) 2014 LameStation LLC
@@ -17,19 +17,13 @@ OBJ
     audio   : "LameAudio"
     music   : "LameMusic"
     
-    song    : "song_thebeat"
+    song    : "song_proppaly_awesome"
 
 PUB Main
     audio.Start
     music.Start
-    music.LoadSong(song.Addr)
-
-    audio.SetParam(0, audio#_WAV, audio#_SQUARE)
-    audio.SetParam(1, audio#_WAV, audio#_TRIANGLE)
-    audio.SetParam(2, audio#_WAV, audio#_SINE)
-'    audio.SetParam(3, audio#_WAV, audio#_SINE)
- '   
-    music.LoopSong
+    music.Load(song.Addr)
+    music.Play
 
 DAT
 {{

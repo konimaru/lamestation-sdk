@@ -19,13 +19,13 @@ OBJ
     music   : "LameMusic"
     ctrl    : "LameControl"
     
-    song    : "song_pixeltheme"
+    song    : "song_zeroforce"
 
 PUB Main
     audio.Start
     music.Start
-    music.LoadSong(song.Addr)
-    music.LoopSong
+    music.Load(song.Addr)
+    music.Loop
     
 DAT
 {{

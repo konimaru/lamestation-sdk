@@ -51,7 +51,7 @@ byte     19,  22,  19,  19,   22,  19,  22,  24
 sequence_data
 byte    TRANS, 0
 byte    TEMPO, 120
-byte    ADSRW+$F, 127, 10, 100, 10, SAW
+byte    ADSRW+$F, 127, 10, 100, 10, SQUARE
 
 byte    1,0,0,0
 byte    2,0,0,0

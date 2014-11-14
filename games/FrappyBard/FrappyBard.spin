@@ -83,8 +83,8 @@ PUB TitleScreen | flightstate
 
     xoffset := 0
 
-    music.LoadSong(song.Addr)
-    music.PlaySong
+    music.Load(song.Addr)
+    music.Play
 
     repeat while not ctrl.A or ctrl.B
         ctrl.Update
@@ -113,7 +113,7 @@ PUB TitleScreen | flightstate
         gfx.Sprite(pressa.Addr,44,52,0)
         lcd.DrawScreen
         
-    music.StopSong
+    music.Stop
 
 PUB GameLoop
 
@@ -318,7 +318,6 @@ PRI Jump(channel) | freq, volcount
     
     audio.SetWaveform(channel, audio#_TRIANGLE)   
     audio.SetEnvelope(channel, 0)
-    audio.SetVolumeSpeed(channel,10)
     
     freq := 30000
     volcount := 3000
@@ -342,7 +341,6 @@ PRI Jump(channel) | freq, volcount
 PRI Ding(channel)
     audio.SetWaveform(channel, audio#_SINE)
     audio.SetEnvelope(channel, 1)
-    audio.SetVolumeSpeed(channel,1000)
     audio.SetADSR(channel, 127,120, 0, 120)
     audio.PlaySound(channel, 60)
     fn.Sleep(100)

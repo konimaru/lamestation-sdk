@@ -1,5 +1,5 @@
 ' *********************************************************
-' song_yeah.spin
+' song_ohno.spin
 ' *********************************************************
 DAT    
 song_data
@@ -7,7 +7,6 @@ word    @patterns_data, @sequence_data
 
 CON
     SONGOFF = $80
-    BAROFF  = $81
     SNOP    = $82
     SOFF    = $83
     
@@ -24,16 +23,17 @@ PUB Addr
 DAT    
 
 patterns_data
-byte    13
+byte    7
 
-byte    0, 27, 27, 27, 29, 29, 29, 31, SNOP, SNOP, SNOP, SNOP, SNOP, SOFF
-byte    1, 34, 34, 34, 36, 36, 36, 35, SNOP, SNOP, SNOP, SNOP, SNOP, SOFF
+byte    30, 29, 28, 27, SNOP, SNOP, SOFF
+byte    18, 17, 16, 15, SNOP, SNOP, SOFF
 
 sequence_data
 byte    TRANS, 0
 byte    TEMPO, 120
 byte    ADSRW+$F, 127, 10, 100, 10, SAW
 
-byte    0,1,BAROFF
+byte    1,2,0,0
+
 byte    SONGOFF
 
