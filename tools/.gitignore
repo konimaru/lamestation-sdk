@@ -1,6 +1,0 @@
-bin/*
-*.dat
-*.pack
-*.$$$
-build/
-dist/

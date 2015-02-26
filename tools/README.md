@@ -1,14 +1,18 @@
-# Setup
+Development support
+===============
 
-The LameStation toolkit requires these dependencies to build.
+The following objects can be used as drop-in replacements for their primary versions. This is to aid development without using the actual hardware (e.g. using a DemoBoard or a QuickStart).
 
- * [**Python 2.7**](https://www.python.org/)
- * [**Python Imaging Library**](http://www.pythonware.com/products/pil/)
- * [**wxPython**](http://www.wxpython.org/download.php)
- * [**cxfreeze**](http://cx-freeze.sourceforge.net/)
+### LameControl
 
-Then the build is straight-forward:
+Reads its input from a serial driver (keys A, B, L, R, U, D). This defaults to the PC download link so may interfere with **LameSerial**.
 
-```
-python setup.py build
-```
+### LameView
+
+Redirects screen output to a VGA monitor. Only a single screen is supported.
+The pin group defaults to 2 (pins 16..23) but can be changed in the driver (constant **vgrp**).
+
+### LameMultiView
+
+Redirects output of up to 4 screens to a VGA monitor. Screens can be added and removed for debugging purposes.
+The pin group defaults to 2 (pins 16..23) but can be changed in the driver (constant **vgrp**).
