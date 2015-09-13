@@ -15,7 +15,7 @@
 '' managing controls easier.
 
 OBJ
-    pin     :   "Pinout"
+    pin     :   "LamePinout"
     fn      :   "LameFunctions"
     
 CON
@@ -34,8 +34,8 @@ DAT
 
 PUB Start
 
-    dira[24..26]~
-    dira[12..15]~
+    dira[pin#BUTTON_A..pin#BUTTON_B]~
+    dira[pin#JOY_UP..pin#JOY_RIGHT]~
     
     
 PUB Update

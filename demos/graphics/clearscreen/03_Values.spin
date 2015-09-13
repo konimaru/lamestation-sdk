@@ -3,14 +3,13 @@ CON
     _xinfreq = 5_000_000
 
 OBJ
-
     lcd     :               "LameLCD"
     gfx     :               "LameGFX"
     fn      :               "LameFunctions"
 
-PUB Blit | val
-
+PUB Main
     lcd.Start(gfx.Start)
+    
     gfx.ClearScreen($FFFF)
     lcd.DrawScreen
 
