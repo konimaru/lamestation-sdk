@@ -1,12 +1,3 @@
-' LameAudio Synthesizer
-' -------------------------------------------------
-' Version: 1.0
-' Copyright (c) 2013-2014 LameStation LLC
-' See end of file for terms of use.
-' 
-' Authors: Brett Weir
-' -------------------------------------------------
-
 OBJ
     pin  :   "LamePinout"
     
@@ -43,7 +34,8 @@ DAT
 PUB null
    
 PUB Start
-    cognew(@entry, @osc_sample)    'start assembly cog
+
+    cognew(@entry, @osc_sample)
     
 PUB SetVolume(channel, value)
     
@@ -53,7 +45,7 @@ PUB SetNote(channel, value)
     
     osc_inc[channel] := freqtable[value//12] >> (9 - value/12)
     
-PUB SetFreq(channel, value)
+PUB SetFrequency(channel, value)
     
     osc_inc[channel] := value
 
@@ -61,13 +53,39 @@ PUB SetParam(channel, type, value)
 
     byte[@osc_envelope[type]][channel] := value
     
-PUB SetADSR(channel, attackvar, decayvar, sustainvar, releasevar)
+PUB SetADSR(channel, attack, decay, sustain, release)
     
-    osc_attack.byte[channel] := attackvar
-    osc_decay.byte[channel] := decayvar
-    osc_sustain.byte[channel] := sustainvar
-    osc_release.byte[channel] := releasevar
+    osc_attack.byte[channel]  := attack
+    osc_decay.byte[channel]   := decay
+    osc_sustain.byte[channel] := sustain
+    osc_release.byte[channel] := release
     
+PUB SetWaveform(channel, value)
+    
+    osc_waveform.byte[channel] := value
+    
+PUB SetEnvelope(channel, enabled)
+   
+    osc_envelope.byte[channel] &= constant(!1)
+    if enabled
+        osc_envelope.byte[channel] |= 1
+    
+PUB StartEnvelope(channel)
+
+    osc_envelope.byte[channel] &= constant(!2)
+    osc_envelope.byte[channel] |= constant(2+4)
+    osc_envelope.byte[channel] &= !4
+
+PUB StopEnvelope(channel)
+
+    osc_envelope.byte[channel] &= constant(!2)
+    osc_envelope.byte[channel] |= 4
+    osc_envelope.byte[channel] &= !4
+ 
+PUB SetSample(address)
+    
+    osc_sample := address
+
 PUB LoadPatch(patchAddr) | i, j, t, c
 
     c := byte[patchAddr] & $F
@@ -80,36 +98,15 @@ PUB LoadPatch(patchAddr) | i, j, t, c
                 SetParam(j, i, byte[t++])
         c >>= 1
     
-PUB SetWaveform(channel, value)
-    
-    osc_waveform.byte[channel] := value
-    
-PUB SetEnvelope(channel, value)
-   
-    osc_envelope.byte[channel] &= constant(!1)
-    if value
-        osc_envelope.byte[channel] |= 1
-    
-PUB StartEnvelope(channel, enable)
-    osc_envelope.byte[channel] &= constant(!2)
-    if enable
-        osc_envelope.byte[channel] |= 2
-    osc_envelope.byte[channel] |= 4
-    osc_envelope.byte[channel] &= !4
- 
-PUB SetSample(value)
-    
-    osc_sample := value
-
-PUB PlaySound(channel, value)
+PUB PlaySound(channel, note)
     
     SetEnvelope(channel, 1)
-    StartEnvelope(channel, 1)
-    SetNote(channel, value)
+    StartEnvelope(channel)
+    SetNote(channel, note)
 
 PUB StopSound(channel)
     
-    StartEnvelope(channel, 0)
+    StopEnvelope(channel)
     
 PUB StopAllSound | i
 
@@ -456,26 +453,3 @@ tr              res     1
 ' ---------------------------------------------------------------
     
                 fit 496
-
-DAT
-{{
-
- TERMS OF USE: MIT License
-
- Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- associated documentation files (the "Software"), to deal in the Software without restriction, including
- without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- following conditions:
-
- The above copyright notice and this permission notice shall be included in all copies or substantial
- portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
- LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-}}
-DAT

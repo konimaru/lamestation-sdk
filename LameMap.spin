@@ -1,12 +1,3 @@
-'' LameMap World Map Library
-'' -------------------------------------------------
-'' Version: 1.0
-'' Copyright (c) 2013-2014 LameStation LLC
-'' See end of file for terms of use.
-''
-'' Authors: Brett Weir, Marko Lukat
-'' -------------------------------------------------
-''
 CON
     #0, MX, MY                                          ' level map header indices
     #1, SX, SY                                          '  tile map header indices
@@ -14,13 +5,12 @@ CON
     COLLIDEBIT = $80
 
 OBJ
-
     gfx :   "LameGFX"
 
 DAT
 
-map_tilemap     long    0                               ' |
-map_levelmap    long    0                               ' order/type locked
+map_tilemap     long    0
+map_levelmap    long    0
 
 PUB Load(source_tilemap, source_levelmap)
 
@@ -104,11 +94,11 @@ PUB TestMoveX(x, y, w, h, newx) | tmp, tx
 
     return tmp + tx
 
-PUB GetWidth
+PUB Width
 
     return word[map_levelmap][MX]
 
-PUB GetHeight
+PUB Height
 
     return word[map_levelmap][MY]
 
