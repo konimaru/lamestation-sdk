@@ -19,6 +19,9 @@ clean:
 	rm -f $(BINARIES)
 	rm -rf $(PREFIX)
 
+build_media:
+	./media/media.sh
+
 test: test_compile
 
 test_compile: $(BINARIES)

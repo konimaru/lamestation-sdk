@@ -9,7 +9,7 @@ BUILDDIR=.build
 rm -rf ./$BUILDDIR/
 mkdir -p $BUILDDIR/
 
-cp * -r $BUILDDIR/
+cp demos/ games/ tutorials/ library/* -r $BUILDDIR/
 
 if [ -z $1 ] ; then
         echo "No version given... pass as parameter"
@@ -18,6 +18,11 @@ fi
 echo -n "Packaging SDK"
 while read LINE
 do
+        if [[ ! -f $BUILDDIR/$LINE ]]  ; then
+            continue
+        fi
+
+       
         F=`basename $LINE`
 
         # Generate file date
@@ -58,16 +63,17 @@ do
 EOF
         else
                 cat $LINE > $BUILDDIR/$LINE
-
         fi
 
         echo -n "."
 
 done < <(git ls-tree -r ${VERSION} --name-only | grep .spin$)
 
-echo "DONE"
+cp media/ -r $BUILDDIR/
 
-rm -rf ./$BUILDDIR/scripts
+rm -f `find $BUILDDIR/ -name .\* -type f`
+
+echo "DONE"
 
 mv ${BUILDDIR} ${RELEASENAME}
 
