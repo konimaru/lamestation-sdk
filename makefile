@@ -2,11 +2,12 @@ ifndef SPINC
 	SPINC := openspin -q
 endif
 
-LFLAGS := -L library/
-FOLDERS := .
+LFLAGS   := -L library/
+FOLDERS  := library/
 
-OBJECTS := $(shell find $(FOLDERS) -name \*.spin )
+OBJECTS  := $(shell find $(FOLDERS) -name \*.spin )
 BINARIES := $(OBJECTS:.spin=.binary)
+ZIPS     := $(shell find . -name \*.zip)
 
 PREFIX ?= .build
 
@@ -16,11 +17,14 @@ INSTALLS := $(patsubst %,$(PREFIX)/%,$(OBJECTS))
 all: test
 
 clean:
-	rm -f $(BINARIES)
+	rm -f $(BINARIES) $(ZIPS)
 	rm -rf $(PREFIX)
 
-build_media:
-	./media/media.sh
+media:
+	./library/media/media.sh
+
+release:
+	./scripts/release.py $(RELEASE_TAG)
 
 test: test_compile
 
