@@ -2,7 +2,6 @@ CON
     _clkmode = xtal1 + pll16x
     _xinfreq = 5_000_000
     
-    MAX_LEVELS = 6
     MAX_TURN = 13
     MAX_FORWARD = 150
     
@@ -13,18 +12,22 @@ CON
     
     TILESIZE = 3
     
-    #0, DAY, NIGHT, DUSK
     #0, UP, RIGHT, DOWN, LEFT
     #0, T_DOWNRIGHT, T_DOWNLEFT, T_HORIZONTAL, T_UPRIGHT, T_UPLEFT, T_VERTICAL
     
     #0, PLAYER, COMP1, COMP2, COMP3
-    
+    #0, DAY, NIGHT, DUSK    
 
 OBJ
-    lcd  : "LameLCD"
-    gfx  : "LameGFX"
-    txt  : "LameText"
-    ctrl : "LameControl"
+    lcd     : "LameLCD"
+    gfx     : "LameGFX"
+    txt     : "LameText"
+    ctrl    : "LameControl"
+    audio   : "LameAudio"
+    music   : "LameMusic"
+    
+    rc_sfx  : "RaceyCarSound"
+    rc_lvl  : "RaceyCarLevels"
     
     road    : "gfx_road"
     sun     : "gfx_sun"
@@ -74,26 +77,29 @@ VAR
     long    sunposition
     word    currentlevel
     
-    word    levels[MAX_LEVELS]
     byte    time_of_day
+    
+    byte    lap
 
-PUB Main | i
+PUB Main
+
     lcd.Start(buffer := gfx.Start)
     lcd.SetFrameLimit (lcd#FULLSPEED)
     ctrl.Start
+    audio.Start
+    music.Start
+    
+    rc_sfx.Start
+    rc_lvl.Start
+
+    random := cnt
     
     txt.Load (fntb.Addr, " ", 0, 0)
     
-    levels[0] := @level1
-    levels[1] := @level2
-    levels[2] := @level1
-    levels[3] := @level1
-    
-    currentlevel := levels[1]
+    currentlevel := rc_lvl.GetLevel(0)
     
     SetOffset(PLAYER, -14)
     
-    random := cnt
     dir_acc := 0
     
     repeat
@@ -158,6 +164,8 @@ PUB GameLoop | turnspeed, spinout
         if ctrl.Right
             offset_x_acc -= turnspeed
             
+            
+    rc_sfx.RevEngine (forward)
     offset_x := offset_x_acc ~> 10
 
     if ||offset_x > 25
@@ -166,8 +174,9 @@ PUB GameLoop | turnspeed, spinout
 
                 
     if ctrl.A
-        if forward < MAX_FORWARD
-            forward += 2
+        ifnot rc_sfx.IsBellActive
+            if forward < MAX_FORWARD
+                forward += 2
     else
         if forward > 0
             forward -= 4
@@ -176,6 +185,7 @@ PUB GameLoop | turnspeed, spinout
         forward := 0
             
     if ctrl.B
+        rc_sfx.Bell
         if forward > 0
             forward -= 8
         else
@@ -194,6 +204,10 @@ PUB GameLoop | turnspeed, spinout
     DrawMeter(meter.Addr, forward, MAX_FORWARD, 1, 1)
     txt.Str(string("mph:"), 10, 6)
     txt.Dec(forward, 26, 6)
+    
+    txt.Str (string("lap:"), 94, 3)
+    txt.Dec (lap, 110, 3)
+    txt.Str (string("/3"), 114, 3)
 
     lcd.Draw
 
@@ -310,12 +324,13 @@ PUB DrawCar
         
     gfx.Sprite (car.Addr, 52, 50, playerdir)
     
-
 PUB DrawMap(level) | addr, x, y, lastdir, c, tile, oldx, oldy, dotx, doty
     
-    lastdir := UP
-    x := 15
-    y := 49
+    x := byte[level++]
+    y := byte[level++]
+    lastdir := byte[level++]
+    level++
+    
     dotx := x-1
     doty := y-1 
 
@@ -385,6 +400,7 @@ PUB DrawMap(level) | addr, x, y, lastdir, c, tile, oldx, oldy, dotx, doty
 
 PUB HandleLevel(level) | addr, c
 
+    level += 4
     addr := level + waypoint
     
     if waypoint == nextwaypoint
@@ -396,7 +412,9 @@ PUB HandleLevel(level) | addr, c
             DIR_RIGHT:      targetdir += 90
             DIR_STRAIGHT:   targetdistance := distance + 10000
                             
-            END_TRACK:      nextwaypoint := waypoint := 0    
+            END_TRACK:      nextwaypoint := waypoint := 0
+                            targetdistance := distance := 0
+                            lap++
                             showgoal := true
 
     if waypoint < nextwaypoint
@@ -412,40 +430,3 @@ PUB HandleLevel(level) | addr, c
                                 waypoint++
                                 showgoal := false
         
-DAT    
-' way points
-
-level1
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-
-byte    END_TRACK
-
-level2
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-byte    DIR_LEFT
-byte    DIR_RIGHT
-byte    DIR_STRAIGHT
-byte    DIR_RIGHT
-byte    DIR_LEFT
-byte    DIR_LEFT
-byte    DIR_STRAIGHT
-byte    DIR_STRAIGHT
-byte    DIR_STRAIGHT
-byte    DIR_LEFT
-byte    DIR_LEFT
-byte    DIR_RIGHT
-byte    DIR_STRAIGHT
-byte    DIR_RIGHT
-byte    DIR_LEFT
-byte    DIR_LEFT
-byte    DIR_STRAIGHT
-byte    DIR_STRAIGHT
-byte    END_TRACK
